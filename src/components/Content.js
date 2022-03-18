@@ -7,13 +7,19 @@ function Content() {
     let topText;
     let bottomText;
     const [result, setResult] = React.useState({imageUrl: '', value: '', topText: '', bottomText: ''});
-    const [allMemesData, setAllMemesData] = React.useState(MemesData);
+    const [allMemesData, setAllMemesData] = React.useState({});
+
+    React.useEffect(async () => {
+        const res = await fetch('https://api.imgflip.com/get_memes');
+        const data = await res.json();
+        setAllMemesData(data.data.memes);
+    }, []);
 
     function clickHandler(e) {
         e.preventDefault();
-        let randomNumber = Math.floor(Math.random() * allMemesData.data.memes.length);
-        imgUrl = allMemesData.data.memes[randomNumber].url;
-        memeName = allMemesData.data.memes[randomNumber].name;
+        let randomNumber = Math.floor(Math.random() * allMemesData.length);
+        imgUrl = allMemesData[randomNumber].url;
+        memeName = allMemesData[randomNumber].name;
 
         setResult((result) => {
             return {...result, imageUrl: imgUrl, value: memeName, bottomText: '', topText: ''}
